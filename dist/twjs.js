@@ -209,6 +209,23 @@
 })();
 
 (function () {
+  'use strict';
+  angular.module("twjs")
+      .factory('CheckAuthInterceptor', ["$q", "$rootScope", function ($q, $rootScope) {
+          return {
+              responseError: function(error) {
+                if (error.status === 401 || error.status === 403) {
+                  $rootScope.$emit('logoutAuthSemAcesso');
+                }
+              }
+          };
+      }])
+      .config(["$httpProvider", function ($httpProvider) {
+          $httpProvider.interceptors.push('CheckAuthInterceptor'); //OAuth 2.0
+      }]);
+})();
+
+(function () {
     'use strict';
     angular.module("twjs")
         .factory('twAuthStorage', ['twConfig', '$window',
